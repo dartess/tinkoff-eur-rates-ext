@@ -2,16 +2,17 @@ const updateRate = () => {
   fetch('http://78.24.219.83:3000/last')
     .then(res => res.json())
     .then(data => {
-      chrome.browserAction.setBadgeBackgroundColor({ color: 'black' });
-      chrome.browserAction.setBadgeText({ text: data.price.toString() });
+      chrome.action.setBadgeBackgroundColor({ color: 'black' });
+      chrome.action.setBadgeText({ text: data.price.toString() });
     })
     .catch(e => {
-      chrome.browserAction.setBadgeBackgroundColor({ color: 'red' });
-      chrome.browserAction.setBadgeText({ text: 'err' });
+      chrome.action.setBadgeBackgroundColor({ color: 'red' });
+      chrome.action.setBadgeText({ text: 'err' });
     })
 };
 
-window.onload = () => {
-  updateRate();
-  window.setInterval(updateRate, 5 * 1000);
-};
+chrome.runtime.onInstalled.addListener(() => {
+    updateRate();
+    chrome.alarms.create({ delayInMinutes: 1 });
+    chrome.alarms.onAlarm.addListener(updateRate);
+});
