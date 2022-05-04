@@ -25,7 +25,10 @@ const makeChart = async (type) => {
 }
 
 window.addEventListener('load', async () => {
-    const type = (await chrome.storage.local.get(['type']))?.type ?? 'day';
+    const {
+        type = 'day',
+        lastUpdate,
+    } = (await chrome.storage.local.get(['type', 'lastUpdate']));
 
     let chart = await makeChart(type);
 
@@ -38,4 +41,9 @@ window.addEventListener('load', async () => {
         chart.destroy();
         chart = await makeChart(newType);
     })
+
+    const lastUpdateSpan = document.getElementById('lastUpdate');
+    lastUpdateSpan.textContent = lastUpdate
+        ? new Date(lastUpdate).toLocaleString()
+        : '-';
 })

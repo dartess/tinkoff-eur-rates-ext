@@ -4,6 +4,7 @@ const updateRate = () => {
     .then(data => {
       chrome.action.setBadgeBackgroundColor({ color: 'black' });
       chrome.action.setBadgeText({ text: data.price.toString() });
+      chrome.storage.local.set({ lastUpdate: data.date });
     })
     .catch(e => {
       chrome.action.setBadgeBackgroundColor({ color: 'red' });
@@ -12,7 +13,6 @@ const updateRate = () => {
 };
 
 chrome.runtime.onInstalled.addListener(() => {
-    updateRate();
-    chrome.alarms.create({ delayInMinutes: 1 });
+    chrome.alarms.create({ when: 0, periodInMinutes: 1 });
     chrome.alarms.onAlarm.addListener(updateRate);
 });
