@@ -2,6 +2,12 @@ const makeChart = async (type) => {
     const response = await fetch(`http://78.24.219.83:3000/${type}`);
     const rates = (await response.json()).reverse();
 
+    rates.forEach((item, index, items) => {
+        if (item.price === -1) {
+            item.price = items[index - 1]?.price ?? -1;
+        };
+    });
+
     const labels = type === 'day'
         ? rates.map(item => new Date(item.date).toLocaleTimeString().slice(0, 5))
         : rates.map(item => new Date(item.date).toLocaleString().slice(0, 17))
@@ -35,7 +41,7 @@ window.addEventListener('load', async () => {
     const select = document.getElementById('period');
     select.value = type;
     select.disabled = false;
-    select.addEventListener('change',  async (event) => {
+    select.addEventListener('change', async (event) => {
         const newType = event.target.value;
         chrome.storage.local.set({ type: newType });
         chart.destroy();
