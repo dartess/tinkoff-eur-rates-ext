@@ -34,7 +34,8 @@ window.addEventListener('load', async () => {
     const {
         type = 'day',
         lastUpdate,
-    } = (await chrome.storage.local.get(['type', 'lastUpdate']));
+        targetPrice,
+    } = await chrome.storage.local.get(['type', 'lastUpdate', 'targetPrice']);
 
     let chart = await makeChart(type);
 
@@ -52,4 +53,11 @@ window.addEventListener('load', async () => {
     lastUpdateSpan.textContent = lastUpdate
         ? new Date(lastUpdate).toLocaleString()
         : '-';
+
+    const targetPriceInput = document.getElementById('targetPrice');
+    targetPriceInput.value = targetPrice ?? 0;
+    targetPriceInput.onchange = ({ target: { value }}) => {
+        const newTargetPrice = parseFloat(value.replace(',', '.'));
+        chrome.storage.local.set({ targetPrice: newTargetPrice });
+    }
 })

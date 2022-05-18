@@ -5,6 +5,21 @@ const updateRate = async () => {
         chrome.action.setBadgeBackgroundColor({ color: 'black' });
         chrome.action.setBadgeText({ text: price.toString() });
         chrome.storage.local.set({ lastUpdate: date });
+
+        if (price === -1) {
+            return;
+        }
+        const { lastPrice, targetPrice } = await chrome.storage.local.get(['lastPrice', 'targetPrice']);
+        if (targetPrice && price >= targetPrice && (!lastPrice || lastPrice < targetPrice)) {
+            chrome.notifications.create({
+                iconUrl: 'notice-price.png',
+                title: 'Изменение цены за евро',
+                message: `Новая цена: ${price}`,
+                priority: 2,
+                type: 'basic',
+            });
+        }
+        chrome.storage.local.set({ lastPrice: price });
     } catch (e) {
         console.warn(e);
         chrome.action.setBadgeBackgroundColor({ color: 'red' });
