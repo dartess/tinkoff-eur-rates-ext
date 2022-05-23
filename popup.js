@@ -5,7 +5,7 @@ const makeChart = async (type) => {
     rates.forEach((item, index, items) => {
         if (item.price === -1) {
             item.price = items[index - 1]?.price ?? -1;
-        };
+        }
     });
 
     const labels = type === 'day'
@@ -64,4 +64,16 @@ window.addEventListener('load', async () => {
             chrome.storage.local.remove('targetPrice');
         }
     }
+
+    const refreshButton = document.getElementById('refresh');
+    refreshButton.addEventListener('click', async () => {
+        try {
+            const response = await fetch(`http://78.24.219.83:3000/refresh`, { method: 'POST' });
+            const rate = await response.json();
+            lastUpdateSpan.textContent = new Date(rate.date).toLocaleString();
+            chrome.action.setBadgeText({ text: rate.price.toString() });
+        } catch {
+            alert('Что-то пошло не так');
+        }
+    })
 })
