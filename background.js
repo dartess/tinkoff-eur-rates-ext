@@ -40,3 +40,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         updateRate();
     }
 });
+
+chrome.notifications.onClicked.addListener(() => {
+    chrome.tabs.create({ url: 'https://solar-staff.com/user/finance' });
+});
