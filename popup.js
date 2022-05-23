@@ -55,9 +55,13 @@ window.addEventListener('load', async () => {
         : '-';
 
     const targetPriceInput = document.getElementById('targetPrice');
-    targetPriceInput.value = targetPrice ?? 0;
-    targetPriceInput.onchange = ({ target: { value }}) => {
+    targetPriceInput.value = targetPrice ?? '';
+    targetPriceInput.oninput = ({ target: { value }}) => {
         const newTargetPrice = parseFloat(value.replace(',', '.'));
-        chrome.storage.local.set({ targetPrice: newTargetPrice });
+        if (Number.isFinite(newTargetPrice)) {
+            chrome.storage.local.set({ targetPrice: newTargetPrice });
+        } else {
+            chrome.storage.local.remove('targetPrice');
+        }
     }
 })
