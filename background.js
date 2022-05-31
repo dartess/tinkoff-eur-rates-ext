@@ -2,7 +2,7 @@ const updateRate = async () => {
     try {
         const response = await fetch('http://78.24.219.83:3000/last');
         const { price, date } = await response.json();
-        chrome.action.setBadgeBackgroundColor({ color: 'black' });
+        chrome.action.setBadgeBackgroundColor({ color: '#808080' });
         chrome.action.setBadgeText({ text: price.toString() });
         chrome.storage.local.set({ lastUpdate: date });
 
